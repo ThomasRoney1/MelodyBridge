@@ -24,17 +24,30 @@
             pointer-events: none;
             z-index: 0;
         }
+        .language-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 50;
+        }
     </style>
 </head>
 <body class="bg-gray-50">
+    <!-- Language Toggle Button -->
+    <div class="language-toggle">
+        <button id="language-switch" class="bg-white text-purple-600 px-4 py-2 rounded-full shadow-md hover:bg-purple-50 transition duration-300">
+            <span id="language-indicator">ES</span>
+        </button>
+    </div>
+
     <header class="hero-bg text-white relative py-24 overflow-hidden">
         <div id="music-notes-container" class="absolute inset-0 z-0 pointer-events-none overflow-hidden"></div>
         <div class="container mx-auto px-4 text-center relative z-10">
             <h1 class="text-5xl font-bold mb-6" id="main-title">Melody Bridge</h1>
-            <p class="text-xl mb-12 max-w-2xl mx-auto" id="subtitle">
+            <p class="text-xl mb-12 max-w-2xl mx-auto" id="subtitle" data-en="Transforming Communities Through the Power of Music" data-es="Transformando Comunidades a Través del Poder de la Música">
                 Transforming Communities Through the Power of Music
             </p>
-            <a href="#mission" class="bg-white text-purple-600 px-8 py-3 rounded-full font-semibold hover:bg-purple-50 transition duration-300 inline-block transform hover:scale-105">
+            <a href="#mission" class="bg-white text-purple-600 px-8 py-3 rounded-full font-semibold hover:bg-purple-50 transition duration-300 inline-block transform hover:scale-105" id="mission-button" data-en="Learn Our Mission" data-es="Conoce Nuestra Misión">
                 Learn Our Mission
             </a>
         </div>
@@ -43,8 +56,8 @@
     <main>
         <section id="mission" class="container mx-auto px-4 py-24 grid md:grid-cols-2 gap-12 items-center">
             <div class="opacity-0" id="mission-text">
-                <h2 class="text-4xl font-bold mb-6 text-purple-800">Our Mission</h2>
-                <p class="text-lg text-gray-700 mb-6">
+                <h2 class="text-4xl font-bold mb-6 text-purple-800" id="mission-title" data-en="Our Mission" data-es="Nuestra Misión">Our Mission</h2>
+                <p class="text-lg text-gray-700 mb-6" id="mission-description" data-en="Melody Bridge empowers underserved communities by providing music education, instrument access, and performance opportunities for youth." data-es="Melody Bridge empoderar comunidades desatendidas brindando educación musical, acceso a instrumentos y oportunidades de actuación para jóvenes.">
                     Melody Bridge empowers underserved communities by providing music education, instrument access, and performance opportunities for youth.
                 </p>
                 <ul class="space-y-4 text-gray-600">
@@ -52,19 +65,19 @@
                         <svg class="w-6 h-6 mr-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        Idea 1
+                        <span data-en="Free Music Lessons" data-es="Idea 1">Idea 1</span>
                     </li>
                     <li class="flex items-center">
                         <svg class="w-6 h-6 mr-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        Idea 2
+                        <span data-en="Community Concerts" data-es="Idea 2">Idea 2</span>
                     </li>
                     <li class="flex items-center">
                         <svg class="w-6 h-6 mr-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        Idea 3
+                        <span data-en="Instrument Donation Program" data-es="Idea 3">Idea 3</span>
                     </li>
                 </ul>
             </div>
@@ -76,9 +89,11 @@
 
     <footer class="bg-gray-900 text-white py-12">
         <div class="container mx-auto px-4 text-center">
-            <h3 class="text-2xl font-bold mb-4">Join Our Musical Journey</h3>
-            <p class="mb-6 max-w-xl mx-auto">Help us make a difference. Your support can provide music education to children who need it most.</p>
-            <button class="bg-blue-500 hover:bg-blue-600 text-white px-8 py-3 rounded-full transition duration-300 transform hover:scale-105">
+            <h3 class="text-2xl font-bold mb-4" id="footer-title" data-en="Join Our Musical Journey" data-es="Únete a Nuestro Viaje Musical">Join Our Musical Journey</h3>
+            <p class="mb-6 max-w-xl mx-auto" id="footer-description" data-en="Help us make a difference. Your support can provide music education to children who need it most." data-es="Ayúdanos a marcar la diferencia. Tu apoyo puede brindar educación musical a los niños que más lo necesitan.">
+                Help us make a difference. Your support can provide music education to children who need it most.
+            </p>
+            <button class="bg-blue-500 hover:bg-blue-600 text-white px-8 py-3 rounded-full transition duration-300 transform hover:scale-105" id="donate-button" data-en="Donate Now" data-es="Donar Ahora">
                 Donate Now
             </button>
         </div>
@@ -87,6 +102,25 @@
     <script>
         // Register ScrollTrigger
         gsap.registerPlugin(ScrollTrigger);
+
+        // Language Toggle Functionality
+        let isSpanish = false;
+        const languageSwitch = document.getElementById('language-switch');
+        const languageIndicator = document.getElementById('language-indicator');
+
+        // Function to switch language
+        function toggleLanguage() {
+            isSpanish = !isSpanish;
+            languageIndicator.textContent = isSpanish ? 'EN' : 'ES';
+
+            // Update text for all elements with data-en and data-es attributes
+            document.querySelectorAll('[data-en][data-es]').forEach(el => {
+                el.textContent = isSpanish ? el.getAttribute('data-es') : el.getAttribute('data-en');
+            });
+        }
+
+        // Add event listener to language switch button
+        languageSwitch.addEventListener('click', toggleLanguage);
 
         // Music Note Animation with Improved Visibility
         function createMusicNotes() {
