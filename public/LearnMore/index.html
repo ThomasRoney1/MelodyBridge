@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Melody Bridge - Our Team</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap');
+        body {
+            font-family: 'Montserrat', sans-serif;
+        }
+        .team-member-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .team-member-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .details-overlay {
+            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
+        }
+        .page-btn {
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .page-btn:hover {
+            background-color: rgba(124, 58, 237, 0.1);
+        }
+        .page-btn.active {
+            background-color: rgb(124, 58, 237);
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <header class="bg-purple-700 text-white py-12 text-center">
+        <h1 class="text-4xl font-bold mb-4">Our Team</h1>
+        <p class="text-xl max-w-2xl mx-auto px-4">
+            Meet the passionate individuals behind Melody Bridge, dedicated to transforming communities through the power of music.
+        </p>
+    </header>
+
+    <main class="container mx-auto px-4 py-16">
+        <div class="grid md:grid-cols-3 gap-8" id="team-members">
+            <!-- Team member cards will be dynamically inserted here -->
+        </div>
+
+        <div class="flex justify-center items-center space-x-2 mt-12" id="pagination">
+            <!-- Pagination buttons will be dynamically inserted here -->
+        </div>
+
+        <div class="text-center mt-4 text-gray-600" id="member-count">
+            <!-- Total member count will be displayed here -->
+        </div>
+    </main>
+
+    <script>
+        // Generate personalized team members
+        function generateTeamMembers() {
+            return [
+                {
+                    id: 1,
+                    name: "Elena Rodriguez",
+                    role: "Program Director",
+                    image: "/api/placeholder/400/400?name=Elena",
+                    bio: "A renowned music educator with over 15 years of experience in community music programs. Elena has developed innovative curricula that use music as a tool for social transformation, particularly in underserved communities.",
+                    email: "elena.rodriguez@melodybridge.org",
+                    linkedin: "https://www.linkedin.com/in/elenarodriguez",
+                    twitter: "https://twitter.com/elena_music"
+                },
+                {
+                    id: 2,
+                    name: "Marcus Chen",
+                    role: "Community Outreach Manager",
+                    image: "/api/placeholder/400/400?name=Marcus",
+                    bio: "A passionate advocate for music education, Marcus has spent a decade connecting musicians with community centers, schools, and youth programs. His work focuses on creating inclusive musical experiences for children from diverse backgrounds.",
+                    email: "marcus.chen@melodybridge.org",
+                    linkedin: "https://www.linkedin.com/in/marcuschen",
+                    twitter: "https://twitter.com/marcus_outreach"
+                },
+                {
+                    id: 3,
+                    name: "Aisha Williams",
+                    role: "Creative Director",
+                    image: "/api/placeholder/400/400?name=Aisha",
+                    bio: "An accomplished composer and music therapist, Aisha leads Melody Bridge's creative vision. She has worked extensively with arts-based healing programs and believes in music's power to create emotional resilience.",
+                    email: "aisha.williams@melodybridge.org",
+                    linkedin: "https://www.linkedin.com/in/aishamusic",
+                    twitter: "https://twitter.com/aisha_creates"
+                },
+                {
+                    id: 4,
+                    name: "David Thompson",
+                    role: "Operations Coordinator",
+                    image: "/api/placeholder/400/400?name=David",
+                    bio: "With a background in nonprofit management, David ensures that Melody Bridge's programs run smoothly. He brings systematic thinking and a deep commitment to operational excellence in service of musical education.",
+                    email: "david.thompson@melodybridge.org",
+                    linkedin: "https://www.linkedin.com/in/davidthompson",
+                    twitter: "https://twitter.com/david_ops"
+                },
+                {
+                    id: 5,
+                    name: "Sofia Martinez",
+                    role: "Grant Writer",
+                    image: "/api/placeholder/400/400?name=Sofia",
+                    bio: "A skilled grant writer with a passion for arts education, Sofia secures crucial funding that allows Melody Bridge to expand its reach and impact. Her storytelling brings the organization's mission to life for potential funders.",
+                    email: "sofia.martinez@melodybridge.org",
+                    linkedin: "https://www.linkedin.com/in/sofiamartinez",
+                    twitter: "https://twitter.com/sofia_grants"
+                },
+                {
+                    id: 6,
+                    name: "Kai Nakamura",
+                    role: "Music Education Specialist",
+                    image: "/api/placeholder/400/400?name=Kai",
+                    bio: "A professional musician and educator, Kai develops innovative music curriculum that bridges cultural experiences. His approach integrates traditional and contemporary musical techniques to engage students of all backgrounds.",
+                    email: "kai.nakamura@melodybridge.org",
+                    linkedin: "https://www.linkedin.com/in/kainakamura",
+                    twitter: "https://twitter.com/kai_music_ed"
+                },
+                {
+                    id: 7,
+                    name: "Amara Okonkwo",
+                    role: "Community Engagement Lead",
+                    image: "/api/placeholder/400/400?name=Amara",
+                    bio: "With a background in social work and community development, Amara leads Melody Bridge's grassroots initiatives. She specializes in creating meaningful connections between musicians and local community organizations.",
+                    email: "amara.okonkwo@melodybridge.org",
+                    linkedin: "https://www.linkedin.com/in/amaraokonkwo",
+                    twitter: "https://twitter.com/amara_engage"
+                }
+            ];
+        }
+
+        // Pagination configuration
+        const MEMBERS_PER_PAGE = 6;
+        const teamMembers = generateTeamMembers();
+        const totalMembers = teamMembers.length;
+        let currentPage = 1;
+
+        // Function to render team member cards
+        function renderTeamMembers(page) {
+            const teamMembersContainer = document.getElementById('team-members');
+            const startIndex = (page - 1) * MEMBERS_PER_PAGE;
+            const endIndex = startIndex + MEMBERS_PER_PAGE;
+            
+            // Clear previous cards
+            teamMembersContainer.innerHTML = '';
+            
+            // Render cards for current page
+            const pageMembers = teamMembers.slice(startIndex, endIndex);
+            pageMembers.forEach(member => {
+                const cardDiv = document.createElement('div');
+                cardDiv.className = 'team-member-card bg-white rounded-lg shadow-xl overflow-hidden';
+                
+                cardDiv.innerHTML = `
+                    <div class="relative">
+                        <img 
+                            src="${member.image}" 
+                            alt="${member.name}" 
+                            class="w-full h-64 object-cover"
+                        >
+                        <div class="absolute inset-0 details-overlay flex flex-col justify-end p-4 text-white">
+                            <h3 class="text-xl font-bold">${member.name}</h3>
+                            <p class="text-white/80">${member.role}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="p-4">
+                        <button 
+                            class="details-toggle w-full bg-purple-600 text-white py-2 rounded-full hover:bg-purple-700 transition duration-300"
+                        >
+                            View Details
+                        </button>
+                        
+                        <div class="member-details hidden mt-4 text-gray-700">
+                            <p class="mb-4">${member.bio}</p>
+                            <div class="border-t pt-4">
+                                <p class="mb-2"><strong>Email:</strong> ${member.email}</p>
+                                <div class="flex space-x-4 mt-2">
+                                    <a 
+                                        href="${member.linkedin}" 
+                                        class="text-purple-600 hover:text-purple-800"
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                    >
+                                        LinkedIn
+                                    </a>
+                                    <a 
+                                        href="${member.twitter}" 
+                                        class="text-purple-600 hover:text-purple-800"
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                    >
+                                        Twitter
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                teamMembersContainer.appendChild(cardDiv);
+            });
+
+            // Add event listeners to toggle details
+            document.querySelectorAll('.details-toggle').forEach(button => {
+                button.addEventListener('click', function() {
+                    const detailsSection = this.nextElementSibling;
+                    const isHidden = detailsSection.classList.contains('hidden');
+                    
+                    // Hide all other details first
+                    document.querySelectorAll('.member-details').forEach(details => {
+                        details.classList.add('hidden');
+                        details.previousElementSibling.textContent = 'View Details';
+                    });
+                    
+                    // Toggle current details
+                    if (isHidden) {
+                        detailsSection.classList.remove('hidden');
+                        this.textContent = 'Hide Details';
+                    } else {
+                        detailsSection.classList.add('hidden');
+                        this.textContent = 'View Details';
+                    }
+                });
+            });
+        }
+
+        // Function to render pagination
+        function renderPagination() {
+            const paginationContainer = document.getElementById('pagination');
+            const memberCountContainer = document.getElementById('member-count');
+            const totalPages = Math.ceil(teamMembers.length / MEMBERS_PER_PAGE);
+
+            // Clear previous pagination
+            paginationContainer.innerHTML = '';
+
+            // Previous button
+            if (currentPage > 1) {
+                const prevBtn = document.createElement('button');
+                prevBtn.textContent = 'Previous';
+                prevBtn.className = 'page-btn px-4 py-2 border rounded';
+                prevBtn.addEventListener('click', () => {
+                    currentPage--;
+                    renderTeamMembers(currentPage);
+                    renderPagination();
+                });
+                paginationContainer.appendChild(prevBtn);
+            }
+
+            // Page number buttons
+            for (let i = 1; i <= totalPages; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.textContent = i;
+                pageBtn.className = `page-btn px-4 py-2 border rounded ${i === currentPage ? 'active' : ''}`;
+                pageBtn.addEventListener('click', () => {
+                    currentPage = i;
+                    renderTeamMembers(currentPage);
+                    renderPagination();
+                });
+                paginationContainer.appendChild(pageBtn);
+            }
+
+            // Next button
+            if (currentPage < totalPages) {
+                const nextBtn = document.createElement('button');
+                nextBtn.textContent = 'Next';
+                nextBtn.className = 'page-btn px-4 py-2 border rounded';
+                nextBtn.addEventListener('click', () => {
+                    currentPage++;
+                    renderTeamMembers(currentPage);
+                    renderPagination();
+                });
+                paginationContainer.appendChild(nextBtn);
+            }
+
+            // Update member count
+            memberCountContainer.textContent = `Showing ${(currentPage - 1) * MEMBERS_PER_PAGE + 1} - ${Math.min(currentPage * MEMBERS_PER_PAGE, teamMembers.length)} of ${teamMembers.length} team members`;
+        }
+
+        // Initial render
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTeamMembers(currentPage);
+            renderPagination();
+        });
+    </script>
+</body>
+</html>
